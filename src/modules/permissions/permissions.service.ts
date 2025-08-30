@@ -37,12 +37,12 @@ export class PermissionsService {
   }
 
 
-  async userHasAnyPermissions(userId:number, permissions:string[]):Promise<Boolean>{
+  async userHasAnyPermissions(userId:number, permissions:string[]):Promise<boolean>{
     const userPermissions = await this.getUserPermissions(userId);
     return permissions.some((permission)=>userPermissions.includes(permission))
   }
 
-  async userHasAllPermissions(userId:number, permissions:string[]):Promise<Boolean>{
+  async userHasAllPermissions(userId:number, permissions:string[]):Promise<boolean>{
     const userPermissions = await this.getUserPermissions(userId);
     return permissions.every((permission)=>userPermissions.includes(permission))
   }
