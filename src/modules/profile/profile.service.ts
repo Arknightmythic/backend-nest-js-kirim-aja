@@ -52,7 +52,7 @@ export class ProfileService {
             updatedData.email = updateProfileDto.email;
         }
         if (updateProfileDto.phone_number) {
-            updatedData.phone_number = updateProfileDto.phone_number;
+            updatedData.phoneNumber = updateProfileDto.phone_number;
         }
         if (avatarFileName) {
             updatedData.avatar = `uploads/photos/${avatarFileName}`;

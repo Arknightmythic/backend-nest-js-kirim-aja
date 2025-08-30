@@ -18,7 +18,6 @@ import { ProfileResponse } from './response/profile.response';
 import { BaseResponse } from 'src/common/interface/basee-response.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { file } from 'zod/v4';
 import { extname } from 'path';
 
 @Controller('profile')
