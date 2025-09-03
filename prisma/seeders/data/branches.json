@@ -1,0 +1,29 @@
+{
+  "data": [
+    {
+      "name": "Branch 2",
+      "address": "Jl. Guna Guni 322, Jakarta Barat",
+      "phone_number": "089375834534534"
+    },
+    {
+      "name": "Branch 3",
+      "address": "Jl. Melati No. 45, Bandung",
+      "phone_number": "081234567890"
+    },
+    {
+      "name": "Branch 4",
+      "address": "Jl. Kenanga No. 12, Surabaya",
+      "phone_number": "082198765432"
+    },
+    {
+      "name": "Branch 5",
+      "address": "Jl. Mawar No. 7, Medan",
+      "phone_number": "083176543210"
+    },
+    {
+      "name": "Branch 6",
+      "address": "Jl. Cendana No. 88, Yogyakarta",
+      "phone_number": "085212345678"
+    }
+  ]
+}
