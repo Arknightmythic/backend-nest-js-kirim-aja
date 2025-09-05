@@ -1,0 +1,94 @@
+{
+  "data": [
+    {
+      "name": "Courier Jakarta Barat",
+      "email": "courier.jakbar@mail.com",
+      "password": "password123",
+      "phoneNumber": "0833333333",
+      "roleKey": "courier",
+      "branchName": "Branch 2",
+      "type": "courier"
+    },
+    {
+      "name": "Admin Branch Jakarta Barat",
+      "email": "adminbranch.jakbar@mail.com",
+      "password": "password123",
+      "phoneNumber": "0844444444",
+      "roleKey": "admin-branch",
+      "branchName": "Branch 2",
+      "type": "admin"
+    },
+    {
+      "name": "Courier Bandung",
+      "email": "courier.bandung@mail.com",
+      "password": "password123",
+      "phoneNumber": "0855555555",
+      "roleKey": "courier",
+      "branchName": "Branch 3",
+      "type": "courier"
+    },
+    {
+      "name": "Admin Branch Bandung",
+      "email": "adminbranch.bandung@mail.com",
+      "password": "password123",
+      "phoneNumber": "0866666666",
+      "roleKey": "admin-branch",
+      "branchName": "Branch 3",
+      "type": "admin"
+    },
+    {
+      "name": "Courier Surabaya",
+      "email": "courier.surabaya@mail.com",
+      "password": "password123",
+      "phoneNumber": "0877777777",
+      "roleKey": "courier",
+      "branchName": "Branch 4",
+      "type": "courier"
+    },
+    {
+      "name": "Admin Branch Surabaya",
+      "email": "adminbranch.surabaya@mail.com",
+      "password": "password123",
+      "phoneNumber": "0888888888",
+      "roleKey": "admin-branch",
+      "branchName": "Branch 4",
+      "type": "admin"
+    },
+    {
+      "name": "Courier Medan",
+      "email": "courier.medan@mail.com",
+      "password": "password123",
+      "phoneNumber": "0899999999",
+      "roleKey": "courier",
+      "branchName": "Branch 5",
+      "type": "courier"
+    },
+    {
+      "name": "Admin Branch Medan",
+      "email": "adminbranch.medan@mail.com",
+      "password": "password123",
+      "phoneNumber": "0810101010",
+      "roleKey": "admin-branch",
+      "branchName": "Branch 5",
+      "type": "admin"
+    },
+    {
+      "name": "Courier Yogyakarta",
+      "email": "courier.yogyakarta@mail.com",
+      "password": "password123",
+      "phoneNumber": "0811111111",
+      "roleKey": "courier",
+      "branchName": "Branch 6",
+      "type": "courier"
+    },
+    {
+      "name": "Admin Branch Yogyakarta",
+      "email": "adminbranch.yogyakarta@mail.com",
+      "password": "password123",
+      "phoneNumber": "0812222222",
+      "roleKey": "admin-branch",
+      "branchName": "Branch 6",
+      "type": "admin"
+    }
+  ]
+}
