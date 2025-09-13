@@ -190,7 +190,7 @@ export class EmployeeBranchesService {
                 },
             });
 
-            return { ...updatedEmployeeBranch, user: updatedUser };
+            return { ...updatedEmployeeBranch };
         });
     }
 
