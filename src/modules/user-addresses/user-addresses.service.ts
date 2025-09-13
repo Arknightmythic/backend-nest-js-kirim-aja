@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserAddressDto } from './dto/create-user-address.dto';
 import { UpdateUserAddressDto } from './dto/update-user-address.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -12,36 +12,114 @@ export class UserAddressesService {
         private opencageService: OpenCageService,
     ) {}
 
-    private readonly UPLOAD_PATH = '/uploads/photos/'
+    private readonly UPLOAD_PATH = '/uploads/photos/';
 
-    private generatePhotoPath(filename: string): string |null{
-      return filename ? `${this.UPLOAD_PATH}${filename}` : null
+    private generatePhotoPath(filename: string): string | null {
+        return filename ? `${this.UPLOAD_PATH}${filename}` : null;
     }
 
     private async getCoodinatesFromAddress(
-      address:string
-    ):Promise<{ lat: number; lng: number }> {
-      return await this.opencageService.geocode(address);
-
+        address: string,
+    ): Promise<{ lat: number; lng: number }> {
+        return await this.opencageService.geocode(address);
     }
 
-    async create(createUserAddressDto: CreateUserAddressDto, userId:number, photoFilename?:string):Promise<UserAddress> {
-        const {lat, lng} = await this.getCoodinatesFromAddress(createUserAddressDto.address);
+    async create(
+        createUserAddressDto: CreateUserAddressDto,
+        userId: number,
+        photoFileName?: string,
+    ): Promise<UserAddress> {
+        const { lat, lng } = await this.getCoodinatesFromAddress(
+            createUserAddressDto.address,
+        );
+        if (photoFileName) {
+            createUserAddressDto.photo =
+                await this.generatePhotoPath(photoFileName);
+        }
+
+        return await this.prismaService.userAddress.create({
+            data: {
+                userId,
+                address: createUserAddressDto.address,
+                tag: createUserAddressDto.tag,
+                label: createUserAddressDto.label,
+                photo: createUserAddressDto.photo || null,
+                latitude: lat,
+                longitude: lng,
+            },
+        });
     }
 
-    findAll() {
-        return `This action returns all userAddresses`;
+    async findAll(userId: number): Promise<UserAddress[]> {
+        return await this.prismaService.userAddress.findMany({
+            where: { userId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phoneNumber: true,
+                        avatar: true,
+                    },
+                },
+            },
+        });
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} userAddress`;
+    async findOne(id: number): Promise<UserAddress> {
+        const userAddress = await this.prismaService.userAddress.findUnique({
+            where: { id },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phoneNumber: true,
+                        avatar: true,
+                    },
+                },
+            },
+        });
+        if (!userAddress) {
+          throw new NotFoundException(`User address with id:${id} not exist`);
+        }
+        return userAddress;
     }
 
-    update(id: number, updateUserAddressDto: UpdateUserAddressDto) {
-        return `This action updates a #${id} userAddress`;
+    async update(id: number, updateUserAddressDto: UpdateUserAddressDto, photoFileName?: string|null):Promise<UserAddress> {
+        const userAddress = await this.findOne(id)
+        let newLatitude:number = userAddress.latitude!;
+        let newLongitude:number = userAddress.longitude!;
+
+        if (updateUserAddressDto.address && updateUserAddressDto.address !== userAddress.address){
+          const coordinates = await this.getCoodinatesFromAddress(updateUserAddressDto.address);
+          newLatitude = coordinates.lat;
+          newLongitude = coordinates.lng;
+        }
+
+        if (photoFileName) {
+          updateUserAddressDto.photo = await this.generatePhotoPath(photoFileName);
+        }
+
+        return await this.prismaService.userAddress.update({
+            where: { id },
+            data: {
+              address: updateUserAddressDto.address??userAddress.address,
+              tag: updateUserAddressDto.tag??userAddress.tag,
+              label: updateUserAddressDto.label??userAddress.label,
+              photo: updateUserAddressDto.photo??userAddress.photo,
+              latitude: newLatitude,
+              longitude: newLongitude,
+            },
+        });
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} userAddress`;
+    async remove(id: number):Promise<void> {
+        await this.findOne(id);
+        await this.prismaService.userAddress.delete({
+            where: { id },
+        });
     }
 }
