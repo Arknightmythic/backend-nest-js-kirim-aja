@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import axios from 'axios';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import axios, { AxiosError } from 'axios';
 
 @Injectable()
 export class OpenCageService {
+    private readonly logger = new Logger(OpenCageService.name);
+
     async geocode(address: string): Promise<{ lat: number; lng: number }> {
         const apikey = process.env.OPENCAGE_API_KEY;
         if (!apikey) {
@@ -18,7 +20,9 @@ export class OpenCageService {
                         key: apikey,
                         q: address,
                         limit: 1,
+                        countrycode: 'id', // Menambahkan kode negara untuk akurasi
                     },
+                    timeout: 5000, // Menambahkan batas waktu 5 detik
                 },
             );
             const result = response.data.results?.[0];
@@ -29,7 +33,14 @@ export class OpenCageService {
             const{ lat, lng } = result.geometry;
             return { lat, lng };
         } catch (error) {
-            console.error('Error fetching geocode data:', error);
+            if (error instanceof AxiosError) {
+                this.logger.error(`Error fetching geocode data: ${error.message}`, error.stack);
+                if (error.response) {
+                    // Menangani kesalahan spesifik dari OpenCage
+                    throw new BadRequestException(`Failed to fetch geocode data: ${error.response.data.status.message}`);
+                }
+            }
+            this.logger.error('An unexpected error occurred during geocoding', error.stack);
             throw new BadRequestException('Failed to fetch geocode data');
         }
     }
