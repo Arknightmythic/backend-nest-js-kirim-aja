@@ -5,6 +5,7 @@ import { PermissionGuard } from './modules/auth/guards/permission.guard';
 import { RequiredAnyPermissions } from './modules/auth/decorators/permissions.decorator';
 import { EmailService } from './common/email/email.services';
 
+
 @Controller()
 @UseGuards(JwtAuthGuard, PermissionGuard)
 export class AppController {

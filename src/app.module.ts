@@ -12,6 +12,7 @@ import { EmployeeBranchesModule } from './modules/employee-branches/employee-bra
 import { UserAddressesModule } from './modules/user-addresses/user-addresses.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { EmailService } from './common/email/email.services';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { APP_GUARD } from '@nestjs/core';
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
         },
+        EmailService
     ],
 })
 export class AppModule {}

@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import * as nodemailer from "nodemailer";
-import path from "path";
+import * as path from "path";
+import * as fs from "fs";
+import * as handlebars from "handlebars";
 
 @Injectable()
 export class EmailService {
@@ -18,12 +20,12 @@ export class EmailService {
             },
         })
 
-        this.templatePath = path.join('.src/common/email/templates')
+        this.templatePath = path.join(process.cwd(), 'src/common/email/templates')
     }
 
     private loadTemplate(templateName: string): string {
-        const templatePath = path.join(this.templatePath, `${templateName}.html`);
-        return require('fs').readFileSync(templatePath, 'utf-8');
+        const templatePath = path.join(this.templatePath, `${templateName}.hbs`);
+        return fs.readFileSync(templatePath, 'utf-8');
     }
 
     private compileTemplate(
@@ -31,7 +33,7 @@ export class EmailService {
         data:any,
     ):string{
         const templateSource = this.loadTemplate(templateName);
-        const template = require('handlebars').compile(templateSource);
+        const template = handlebars.compile(templateSource);
         return template(data);
     }
 
@@ -41,7 +43,7 @@ export class EmailService {
             message: 'This is a test email from our application'
         }
         const htmlContent = this.compileTemplate('test-email', templateData);
-        
+
         const mailOptions = {
             from: process.env.SMTP_EMAIL_SENDER,
             to,
@@ -52,5 +54,3 @@ export class EmailService {
         await this.transporter.sendMail(mailOptions);
     }
 }
-
-
