@@ -13,6 +13,7 @@ import { UserAddressesModule } from './modules/user-addresses/user-addresses.mod
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { EmailService } from './common/email/email.services';
+import { QueueModule } from './common/queue/queue.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { EmailService } from './common/email/email.services';
         BranchesModule,
         EmployeeBranchesModule,
         UserAddressesModule,
+        QueueModule,
         ThrottlerModule.forRoot([
             {
                 ttl: 60000, // Waktu dalam milidetik (contoh: 60 detik)

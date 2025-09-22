@@ -4,27 +4,34 @@ import { JwtAuthGuard } from './modules/auth/guards/logged-in.guard';
 import { PermissionGuard } from './modules/auth/guards/permission.guard';
 import { RequiredAnyPermissions } from './modules/auth/decorators/permissions.decorator';
 import { EmailService } from './common/email/email.services';
-
+import { QueueService } from './common/queue/queue.service';
 
 @Controller()
 @UseGuards(JwtAuthGuard, PermissionGuard)
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly emailService: EmailService) {}
+    constructor(
+        private readonly appService: AppService,
+        private readonly emailService: EmailService,
+        private readonly queueService: QueueService,
+    ) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get()
+    getHello(): string {
+        return this.appService.getHello();
+    }
 
-  @Get('protected')
-  @RequiredAnyPermissions('shipments.create')
-  getProtectedResource():string{
-    return 'this is a protected resourcee'
-  }
+    @Get('protected')
+    @RequiredAnyPermissions('shipments.create')
+    getProtectedResource(): string {
+        return 'this is a protected resourcee';
+    }
 
-  @Get('send-email-test')
-  async sendTestEmail():Promise<string>{
-    await this.emailService.testingEmail('testing@gmail.com');
-    return 'Test email sent successfully';
-  }
+    @Get('send-email-test')
+    async sendTestEmail(): Promise<string> {
+        await this.queueService.addEmailJob({
+          to:'testing@gmail.com',
+          type:'testing'
+        });
+        return 'Test email sent successfully';
+    }
 }
