@@ -153,8 +153,8 @@ model ShipmentDetail {
   weight              Float?    @map("weight")
   deliveryType        String    @map("delivery_type")
   destinationAddress  String    @map("destination_address")
-  destinationLatitude String    @map("destination_latitude")
-  destinationLongitude String   @map("destination_longitude")
+  destinationLatitude  Float?    @map("destination_latitude")
+  destinationLongitude Float?    @map("destination_longitude")
   packageType         String    @map("package_type")
   pickupProof         String?   @map("pickup_proof")
   receiptProof        String?   @map("receipt_proof")
@@ -180,16 +180,16 @@ model ShipmentDetail {
 model ShipmentHistory {
   id          Int       @id @default(autoincrement())
   shipmentId  Int       @map("shipment_id")
-  userId      Int       @map("user_id")
-  branchId    Int       @map("branch_id")
+  userId      Int?       @map("user_id")
+  branchId    Int?       @map("branch_id")
   status      String
   description String?
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @default(now()) @map("updated_at")
 
   shipment Shipment @relation(fields: [shipmentId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
-  branch   Branch   @relation(fields: [branchId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id])
+  branch   Branch?   @relation(fields: [branchId], references: [id])
 
   @@map("shipment_histories")
 }

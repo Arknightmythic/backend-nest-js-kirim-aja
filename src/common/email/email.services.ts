@@ -53,4 +53,33 @@ export class EmailService {
 
         await this.transporter.sendMail(mailOptions);
     }
+
+    async sendEmailPaymentNotification(
+        to:string,
+        payment_url:string,
+        shipmentId:number,
+        amount:number,
+        expiryDate:Date
+    ):Promise<void>{
+        const templateData = {
+            shipmentId,
+            // title: 'Payment Notification',
+            // message:`please complete your payment for shipment ID: ${shipmentId} before ${expiryDate.toLocaleString()}`,
+            payment_url,
+            amount:amount.toFixed(2),
+            expiryDate:expiryDate.toLocaleString(),
+        }
+
+        const htmlContent = this.compileTemplate('payment-notification', templateData);
+
+        const mailOptions = {
+            from: process.env.SMTP_EMAIL_SENDER||'',
+            to,
+            subject: 'Payment Notification KirimAja(no need reply)',
+            html: htmlContent,
+        }
+
+        await this.transporter.sendMail(mailOptions);
+    }
+
 }

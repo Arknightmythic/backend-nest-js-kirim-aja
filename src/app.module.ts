@@ -14,6 +14,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { EmailService } from './common/email/email.services';
 import { QueueModule } from './common/queue/queue.module';
+import { ShipmentsModule } from './modules/shipments/shipments.module';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { QueueModule } from './common/queue/queue.module';
                 limit: 10, // Batas permintaan dalam periode waktu di atas (contoh: 10 permintaan)
             },
         ]),
+        ShipmentsModule,
     ],
     controllers: [AppController],
     providers: [
