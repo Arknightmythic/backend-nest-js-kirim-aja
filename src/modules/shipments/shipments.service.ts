@@ -122,8 +122,8 @@ export class ShipmentsService {
             to:userAddress.user.email,
             shipmentId:shipment.id,
             amount:shipmentCost.totalPrice,
-            payment_url:payment.invoiceUrl,
-            expiryDate:payment.expiryDate,
+            payment_url:payment.invoiceUrl??undefined,
+            expiryDate:payment.expiryDate??undefined,
 
           })
         } catch (error) {
