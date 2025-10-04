@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { EmailService } from './common/email/email.services';
 import { QueueModule } from './common/queue/queue.module';
 import { ShipmentsModule } from './modules/shipments/shipments.module';
+import { AppCacheModule } from './common/cache/cache.module';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { ShipmentsModule } from './modules/shipments/shipments.module';
         BranchesModule,
         EmployeeBranchesModule,
         UserAddressesModule,
+        AppCacheModule,
         QueueModule,
         ThrottlerModule.forRoot([
             {

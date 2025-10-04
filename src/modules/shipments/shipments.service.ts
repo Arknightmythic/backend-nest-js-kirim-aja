@@ -136,7 +136,7 @@ export class ShipmentsService {
                     paymentId:payment.id,
                     shipmendtId:shipment.id,
                     externalId:payment.externalId!,
-                }
+                },
                 invoice.expiryDate,
             )
         } catch (error) {

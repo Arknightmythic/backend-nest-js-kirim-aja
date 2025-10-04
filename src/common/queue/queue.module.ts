@@ -16,15 +16,19 @@ import { PrismaService } from "../prisma/prisma.service";
                 password:process.env.REDIS_PASSWORD || undefined
             }
         }),
-        BullModule.registerQueue({
-            name:'email-queue'
-        },{
-            name:'payment-expiry-queue'
-        }),
+        BullModule.registerQueue(
+            {
+                name:'email-queue'
+            },
+            {
+                name:'payment-expired-queue'
+            }
+        ),
     ],
     controllers:[],
     providers:[QueueService, EmailService, EmailQueueProcessor, PaymentExpiryQueueProcessor, PrismaService],
     exports:[QueueService]
+
 
 })
 export class QueueModule{}
