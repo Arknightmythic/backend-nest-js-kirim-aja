@@ -13,9 +13,9 @@ const createShipmentSchema = z.object({
     }).min(1,{
         message: 'Destination address id cannot be empty',
     }),
-    receipient_name:z.string({
-        required_error:'receipient_name is required',
-        invalid_type_error:'receipient_name must be a string',
+    recipient_name:z.string({
+        required_error:'recipient_name is required',
+        invalid_type_error:'recipient_name must be a string',
     }).min(1,{
         message:'Receipent name cannot be empty',
     }),
@@ -51,7 +51,7 @@ export class CreateShipmentDto {
     constructor(
         public pickup_address_id:number,
         public destination_address:string,
-        public receipient_name:string,
+        public recipient_name:string,
         public recipient_phone:string,
         public weight:number,
         public package_type:string,

@@ -67,7 +67,7 @@ export class ShipmentsService {
                         shipmentId: newShipment.id,
                         pickupAddressId: createShipmentDto.pickup_address_id,
                         destinationAddress:createShipmentDto.destination_address,
-                        recipientName: createShipmentDto.receipient_name,
+                        recipientName: createShipmentDto.recipient_name,
                         recipientPhone: createShipmentDto.recipient_phone,
                         weight: createShipmentDto.weight,
                         packageType: createShipmentDto.package_type,
