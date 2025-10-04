@@ -63,10 +63,8 @@ export class EmailService {
     ):Promise<void>{
         const templateData = {
             shipmentId,
-            // title: 'Payment Notification',
-            // message:`please complete your payment for shipment ID: ${shipmentId} before ${expiryDate.toLocaleString()}`,
             payment_url,
-            amount:amount.toFixed(2),
+            amount:amount.toLocaleString('id-ID'),
             expiryDate:expiryDate.toLocaleString(),
         }
 

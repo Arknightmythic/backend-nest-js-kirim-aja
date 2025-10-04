@@ -46,8 +46,10 @@ export class ShipmentsService {
             },
         );
 
+        const distanceInKm = distance/1000
+
         const shipmentCost = this.calculateShipmentCost(
-            distance,
+            distanceInKm,
             createShipmentDto.weight,
             createShipmentDto.delivery_type,
         );
@@ -57,7 +59,7 @@ export class ShipmentsService {
                 const newShipment = await prisma.shipment.create({
                     data: {
                         paymentStatus: PaymentStatus.PENDING,
-                        distance: distance,
+                        distance: distanceInKm,
                         price: shipmentCost.totalPrice,
                     },
                 });
