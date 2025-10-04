@@ -3,6 +3,7 @@ import * as nodemailer from "nodemailer";
 import * as path from "path";
 import * as fs from "fs";
 import * as handlebars from "handlebars";
+import { formatDate } from "src/helper/date.formatter";
 
 @Injectable()
 export class EmailService {
@@ -65,7 +66,7 @@ export class EmailService {
             shipmentId,
             payment_url,
             amount:amount.toLocaleString('id-ID'),
-            expiryDate:expiryDate.toLocaleString(),
+            expiryDate:formatDate(expiryDate),
         }
 
         const htmlContent = this.compileTemplate('payment-notification', templateData);

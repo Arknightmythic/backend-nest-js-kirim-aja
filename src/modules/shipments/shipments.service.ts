@@ -46,7 +46,7 @@ export class ShipmentsService {
             },
         );
 
-        const distanceInKm = distance/1000
+        const distanceInKm = distance / 1000;
 
         const shipmentCost = this.calculateShipmentCost(
             distanceInKm,
@@ -68,7 +68,8 @@ export class ShipmentsService {
                     data: {
                         shipmentId: newShipment.id,
                         pickupAddressId: createShipmentDto.pickup_address_id,
-                        destinationAddress:createShipmentDto.destination_address,
+                        destinationAddress:
+                            createShipmentDto.destination_address,
                         recipientName: createShipmentDto.recipient_name,
                         recipientPhone: createShipmentDto.recipient_phone,
                         weight: createShipmentDto.weight,
@@ -94,43 +95,54 @@ export class ShipmentsService {
             invoiceDuration: 1 * 24 * 60 * 60, // 1 day
         });
 
-        const payment = await this.prismaService.$transaction(
-            async (prisma) => {
-                const createdPayment = await prisma.payment.create({
-                    data: {
-                        shipmentId: shipment.id,
-                        externalId: invoice.externalId,
-                        invoiceId: invoice.id!,
-                        status: invoice.status,
-                        invoiceUrl: invoice.invoiceUrl,
-                        expiryDate: invoice.expiryDate,
-                    },
-                });
+        const payment = await this.prismaService.$transaction(async (prisma) => {
+            const createdPayment = await prisma.payment.create({
+                data: {
+                    shipmentId: shipment.id,
+                    externalId: invoice.externalId,
+                    invoiceId: invoice.id!,
+                    status: invoice.status,
+                    invoiceUrl: invoice.invoiceUrl,
+                    expiryDate: invoice.expiryDate,
+                },
+            });
 
-                await prisma.shipmentHistory.create({
-                    data: {
-                        shipmentId: shipment.id,
-                        status: PaymentStatus.PENDING,
-                        description: `Invoice ${invoice.id} created with status ${invoice.status} and total price ${shipmentCost.totalPrice} cents`,
-                    },
-                })
-                return createdPayment
-            },
-        );
+            await prisma.shipmentHistory.create({
+                data: {
+                    shipmentId: shipment.id,
+                    status: PaymentStatus.PENDING,
+                    description: `Invoice ${invoice.id} created with status ${invoice.status} and total price ${shipmentCost.totalPrice}`,
+                },
+            });
+            return createdPayment;
+        });
 
         try {
-          await this.queueService.addEmailJob({
-            type:'payment-notification',
-            to:userAddress.user.email,
-            shipmentId:shipment.id,
-            amount:shipmentCost.totalPrice,
-            payment_url:payment.invoiceUrl??undefined,
-            expiryDate:payment.expiryDate??undefined,
-
-          })
+            await this.queueService.addEmailJob({
+                type: 'payment-notification',
+                to: userAddress.user.email,
+                shipmentId: shipment.id,
+                amount: shipmentCost.totalPrice,
+                payment_url: payment.invoiceUrl ?? undefined,
+                expiryDate: payment.expiryDate ?? undefined,
+            });
         } catch (error) {
-          console.error('Failed to enqueue email job:', error);
+            console.error('Failed to enqueue email job:', error);
         }
+
+        try {
+            await this.queueService.addPaymentExpiryJob(
+                {
+                    paymentId:payment.id,
+                    shipmendtId:shipment.id,
+                    externalId:payment.externalId!,
+                }
+                invoice.expiryDate,
+            )
+        } catch (error) {
+            console.error('failed to add payment expiry job to queue: ', error)
+        }
+
         return shipment;
     }
 
@@ -176,17 +188,17 @@ export class ShipmentsService {
             same_day: {
                 tier1: 8000, // 0-50 km
                 tier2: 12000, // 51-100 km
-                tier3: 15000, // 100+ km
+                tier3: 15000, // 100+ km per 10km
             },
             next_day: {
                 tier1: 6000, // 0-50 km
                 tier2: 9000, // 51-100 km
-                tier3: 12000, // 100+ km
+                tier3: 12000, // 100+ km per 10km
             },
             regular: {
                 tier1: 4000, // 0-50 km
                 tier2: 6000, // 51-100 km
-                tier3: 8000, // 100+ km
+                tier3: 8000, // 100+ km per 10km
             },
         };
 
@@ -204,9 +216,11 @@ export class ShipmentsService {
         } else if (distance <= 100) {
             distancePrice = distanceRate.tier1 + distanceRate.tier2;
         } else {
-            const extraDistance = Math.ceil((distance - 100) / 10);
+            const extraDistanceIncrements = Math.ceil((distance - 100) / 10);
             distancePrice =
-                distanceRate.tier3 + extraDistance * distanceRate.tier3;
+                distanceRate.tier1 +
+                distanceRate.tier2 +
+                extraDistanceIncrements * distanceRate.tier3;
         }
 
         const totalPrice = basePrice + weightPrice + distancePrice;

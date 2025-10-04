@@ -4,6 +4,8 @@ import { parse } from "path";
 import { QueueService } from "./queue.service";
 import { EmailService } from "../email/email.services";
 import { EmailQueueProcessor } from "./processors/email-queue.processor";
+import { PaymentExpiryQueueProcessor } from "./processors/payment-expired-queue.processor";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Module({
     imports:[
@@ -16,10 +18,12 @@ import { EmailQueueProcessor } from "./processors/email-queue.processor";
         }),
         BullModule.registerQueue({
             name:'email-queue'
-        })
+        },{
+            name:'payment-expiry-queue'
+        }),
     ],
     controllers:[],
-    providers:[QueueService, EmailService, EmailQueueProcessor],
+    providers:[QueueService, EmailService, EmailQueueProcessor, PaymentExpiryQueueProcessor, PrismaService],
     exports:[QueueService]
 
 })
